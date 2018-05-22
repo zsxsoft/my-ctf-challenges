@@ -1,0 +1,36 @@
+
+.center {
+  text-align: center;
+}
+
+.paper {
+  background-color: none;
+  width: 100%;
+  position: relative;
+}
+
+.form-item {
+  width: 90%;
+  margin: 1em;
+}
+
+.post-content {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 2em;
+}
+
+.loading {
+  height: 100%;
+  width: 100%;
+  top: 0;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+}

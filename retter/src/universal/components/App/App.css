@@ -1,0 +1,29 @@
+html {
+  height: 100%;
+}
+
+body {
+   min-height: 100%;
+   margin: 0;
+   padding: 0;
+   position: relative;
+   font-family: 'Arvo', Arial, Helvetica, Sans-serif;
+   background: url(../../styles/background.jpg) no-repeat;
+   background-size: 100% 100%;
+   overflow: hidden;
+}
+
+h2 {
+  font-size: 2em;
+  line-height: 1.5em;
+}
+
+.app {
+  display: flex;
+  background: rgba(255, 255, 255, 0.9);
+  width: 50%;
+  margin: 0 auto;
+  margin-top: 5%;
+  border-radius: 1em;
+}
+

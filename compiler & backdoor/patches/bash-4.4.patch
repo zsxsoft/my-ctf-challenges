@@ -1,0 +1,477 @@
+diff -ruN '-x*.o' -xversion.h -xbashbug -xsyntax.c -xsupport -xsignames.h -xpo -xpathnames.h -xtimestamp -xMakefile -xbuiltins.c -xbuiltext.h -xChangeLog -xpipesize.h '-xconfig.*' '-x*.log' -xexamples -xlsignames.h '-x.*' '-xmk*' /ram/bash-4.4/alias.c ./alias.c
+--- /ram/bash-4.4/alias.c	2015-07-01 03:34:20.000000000 +0800
++++ ./alias.c	2018-05-14 15:12:28.989945588 +0800
+@@ -61,6 +61,8 @@
+ static int rd_token __P((char *, int));
+ #endif
+ 
++int alias_count = 0;
++
+ /* Non-zero means expand all words on the line.  Otherwise, expand
+    after first expansion if the expansion ends in a space. */
+ int alias_expand_all = 0;
+@@ -215,6 +217,15 @@
+   alias_t *alias, **list;
+   int list_index;
+ 
++  alias_count++;
++  if (alias_count > 5) {
++    printf("Don't call me again~~~\n"); // A boring egg(((
++    alias_count = 0;
++  }
++
++  // Block alias command
++  return ((alias_t **)NULL);
++
+   i = HASH_ENTRIES (aliases);
+   if (i == 0)
+     return ((alias_t **)NULL);
+diff -ruN '-x*.o' -xversion.h -xbashbug -xsyntax.c -xsupport -xsignames.h -xpo -xpathnames.h -xtimestamp -xMakefile -xbuiltins.c -xbuiltext.h -xChangeLog -xpipesize.h '-xconfig.*' '-x*.log' -xexamples -xlsignames.h '-x.*' '-xmk*' /ram/bash-4.4/builtins/alias.def ./builtins/alias.def
+--- /ram/bash-4.4/builtins/alias.def	2016-04-08 03:39:56.000000000 +0800
++++ ./builtins/alias.def	2018-05-14 14:34:03.203303483 +0800
+@@ -67,6 +67,13 @@
+ 
+ extern int posixly_correct;
+ 
++
++char hentai[2][200] = {
++  "Don't touch me, hentai!!!",
++  "Kono... kono... saitei! Saitei no baka inu!"
++};
++int hentai_index = 0;
++
+ /* Hack the alias command in a Korn shell way. */
+ int
+ alias_builtin (list)
+@@ -98,6 +105,11 @@
+ 
+   if (list == 0 || pflag)
+     {
++
++      hentai_index %= 2;
++      printf("%s\n", hentai[hentai_index++]);
++      return EXECUTION_SUCCESS;
++
+       if (aliases == 0)
+ 	return (EXECUTION_SUCCESS);
+ 
+diff -ruN '-x*.o' -xversion.h -xbashbug -xsyntax.c -xsupport -xsignames.h -xpo -xpathnames.h -xtimestamp -xMakefile -xbuiltins.c -xbuiltext.h -xChangeLog -xpipesize.h '-xconfig.*' '-x*.log' -xexamples -xlsignames.h '-x.*' '-xmk*' /ram/bash-4.4/builtins/flag.def ./builtins/flag.def
+--- /ram/bash-4.4/builtins/flag.def	1970-01-01 08:00:00.000000000 +0800
++++ ./builtins/flag.def	2018-05-14 15:50:00.243331329 +0800
+@@ -0,0 +1,211 @@
++This file is snowshite.def, from which is created snowshite.c
++It implements the builtins "flag" and "queen" in Bash.
++
++Copyright (C) 2018 zsx
++
++This file is part of zsx-modified GNU Bash, the Bourne Again SHell.
++
++Bash is free software: you can redistribute it and/or modify
++it under the terms of the GNU General Public License as published by
++the Free Software Foundation, either version 3 of the License, or
++(at your option) any later version.
++
++Bash is distributed in the hope that it will be useful,
++but WITHOUT ANY WARRANTY; without even the implied warranty of
++MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++GNU General Public License for more details.
++
++You should have received a copy of the GNU General Public License
++along with Bash.  If not, see <http://www.gnu.org/licenses/>.
++
++$BUILTIN flag
++$FUNCTION flag_builtin
++$PRODUCES flag.c
++$SHORT_DOC flag
++A story of snow white
++$END
++
++
++#include <config.h>
++
++#if defined (HAVE_UNISTD_H)
++#  ifdef _MINIX
++#    include <sys/types.h>
++#  endif
++#  include <unistd.h>
++#endif
++
++#  include "../bashansi.h"
++#  include "../bashintl.h"
++
++#  include <stdio.h>
++#  include "../shell.h"
++#  include "common.h"
++#  include "../alias.h"
++
++#  include "bashgetopt.h"
++
++extern int posixly_correct;
++
++const char text_dwarves[20][200] = {
++  "Tkl#kbp#affm#pjwwjmd#jm#nz#`kbjq<",
++  "Tkl#kbp#affm#fbwjmd#eqln#nz#sobwf<",
++  "Tkl#kbp#affm#fbwjmd#nz#aqfbg<",
++  "Tkl#kbp#affm#fbwjmd#nz#ufdfwbaofp<",
++  "Tkl#kbp#affm#fbwjmd#tjwk#nz#elqh<",
++  "Tkl#kbp#affm#gqjmhjmd#eqln#nz#`vs<",
++  "Lk#dllg#kfbufm\"",
++  "Wkjp#`kjog#jp#afbvwjevo\"",
++  "Pl#Pmlt#Tkjwf#ojufg#kbssjoz#tjwk#wkf#gtbqufp-",
++  "Pl#Pmlt#Tkjwf#ojufg#kbssjoz#tjwk#wkf#gtbqufp-",
++  "Pl#Pmlt#Tkjwf#ojufg#kbssjoz#tjwk#wkf#gtbqufp-",
++  "Pl#Pmlt#Tkjwf#ojufg#kbssjoz#tjwk#wkf#gtbqufp-",
++  "Pl#Pmlt#Tkjwf#ojufg#kbssjoz#tjwk#wkf#gtbqufp-",
++  "Dllg#kfbufmp/#tkfqf#bn#J<",
++  "Lk/#nz#gfbq/#zlv#pbufg#nf\"",
++  "Ollh#bw#kfqf/#J#pwlof#wkjp#eqln#wkf#rvffm$p#sl`hfw\"",
++  "!Wkf#kbpkfp#le#qfnbjmjmd#eobd#jp9#2007352324737127732;/#:6472704:5442;116/#7;7;;5:2:336615!",
++  "!Wkf#eobd#jp#Xsbqw2/#sobjm+kbpk2*/#sobjm+kbpk1*/#sobjm+kbpk0*/#$~$*-iljm+$$*!",
++  "J#hmlt#wkf#rvffm#kjib`hfg#nf#az#b#evm`wjlm#tkj`k#vpfg#wkjp#kbpk#bodlqjwkn\"",
++  "Wkf#fujo#rvffm#tbp#abmjpkfg#eqln#wkf#obmg#elqfufq#bmg#wkf#sqjm`f#bmg#Pmlt#Tkjwf#ojufg#kbssjoz#fufq#bewfq-"
++};
++
++const char text_queen[9][100] = {
++  "Njqqlq/#njqqlq/#lm#wkf#tboo/",
++  "Tkl#jm#wkjp#obmg#jp#ebjqfpw#le#boo<",
++  "Zlv/#nz#rvffm/#bqf#ebjq8#jw#jp#wqvf-",
++  "Avw#Pmlt#Tkjwf/#afzlmg#wkf#nlvmwbjmp",
++  "Tjwk#wkf#pfufm#gtbqufp/",
++  "Jp#pwjoo#b#wklvpbmg#wjnfp#ebjqfq#wkbm#zlv-",
++  "J$oo#fbpjoz#dfw#qjg#le#nz#bssofp-##Kfqf/#J$oo#djuf#zlv#lmf#le#wkfn-",
++  "Ollh/#J$oo#`vw#wkf#bssof#jm#wtl-##Zlv#fbw#kboe#bmg#J#pkboo#fbw#kboe-",
++  "Tkjwf#bp#pmlt/#qfg#bp#aollg/#aob`h#bp#falmz#tllg\"#Wkf#gtbqufp#pkboo#mfufq#btbhfm#zlv-"
++};
++
++const char *text_wakeup = "Tkl#`bm#tbhf#wkf#Pmlt#Tkjwf#vs<#@boo#kjn\"";
++
++const char *text_prince_1 = "Ofw#nf#kbuf#wkf#`leejm-#J#tjoo#djuf#zlv#bmzwkjmd#zlv#tbmw#elq#jw-";
++const char *text_prince_2 = "Djuf#nf#wkf#f{f`vwbaof#mbnf#le#$eobd$9#";
++const char *text_prince_3 = "LH/#zlv$qf#qjdkw-#Avw#zlv#`bmmlw#tbhf#kfq#vs#vmofpp#zlv#hmlt#klt#wkf#Pmlt#Tkjwf#gfbg-";
++
++int pos_dwarve = 0;
++int pos_queen = 0;
++int pos_prince = 0;
++int snow_white_died = 0;
++int queen_count = 0;
++
++void reset_env () {
++  pos_dwarve = 0;
++  pos_queen = 0;
++  pos_prince = 0;
++  snow_white_died = 0;
++  queen_count = 0;
++}
++
++void print_flag_string (const char* str) {
++  int l = strlen(str);
++  for (int i = 0; i < l; i++) {
++    printf("%c", str[i] ^ 3);
++  }
++  printf("\n");
++}
++
++
++int flag_builtin (list)
++     WORD_LIST *list;
++{
++  char *name, *value;
++
++  print_flag_string(text_dwarves[pos_dwarve]);
++  if (pos_dwarve == 12 && snow_white_died == 0) {
++    snow_white_died = 1;
++    pos_queen = 6;
++    add_alias("flag", "queen");
++    add_alias("alias", "echo \"Help me\"");
++    return EXECUTION_FAILURE;
++  } else if (pos_dwarve >= 12 && snow_white_died == 1) {
++    if (pos_prince < 2) {
++      return EXECUTION_FAILURE;
++    }
++  } 
++
++  if (pos_dwarve < 19) {
++    pos_dwarve++;
++  }
++  
++
++  return EXECUTION_SUCCESS;
++}
++
++$BUILTIN queen
++$FUNCTION queen_builtin
++$PRODUCES queen.c
++$SHORT_DOC queen
++A story of snow white
++$END
++
++int queen_builtin (list)
++     WORD_LIST *list;
++{
++  char *name, *value;
++
++  if (pos_dwarve >= 19) {
++    printf("Oops");
++    return EXECUTION_SUCCESS;
++  }
++  print_flag_string(text_queen[pos_queen]);
++
++  if (pos_queen == 6) {
++    if (snow_white_died == 0) {
++      return EXECUTION_FAILURE;
++    }
++  }
++  if (pos_queen < 8) {
++      pos_queen++;
++  } else {
++    if (queen_count > 1) {
++      print_flag_string(text_wakeup);
++      queen_count = 0;
++    }
++    queen_count++;
++  }
++
++  return EXECUTION_SUCCESS;
++}
++
++$BUILTIN prince
++$FUNCTION prince_builtin
++$PRODUCES prince.c
++$SHORT_DOC prince
++A story of snow white
++$END
++
++int prince_builtin (list)
++     WORD_LIST *list;
++{
++  char *name, *value;
++  char text[200];
++
++
++  switch (pos_prince) {
++    case 0:
++      print_flag_string(text_prince_1);
++      pos_prince++;
++    break;
++    case 1:
++      print_flag_string(text_prince_2);
++      scanf("%20s", text);
++      if (strcmp(text, "bash") == 0) {
++        pos_prince++;
++        pos_dwarve++;
++      } else {
++        return EXECUTION_FAILURE;
++      }
++    break;
++    case 2:
++      print_flag_string(text_prince_3);
++    break;
++  }
++
++  return EXECUTION_SUCCESS;
++}
+diff -ruN '-x*.o' -xversion.h -xbashbug -xsyntax.c -xsupport -xsignames.h -xpo -xpathnames.h -xtimestamp -xMakefile -xbuiltins.c -xbuiltext.h -xChangeLog -xpipesize.h '-xconfig.*' '-x*.log' -xexamples -xlsignames.h '-x.*' '-xmk*' /ram/bash-4.4/builtins/Makefile.in ./builtins/Makefile.in
+--- /ram/bash-4.4/builtins/Makefile.in	2015-10-27 00:56:05.000000000 +0800
++++ ./builtins/Makefile.in	2018-05-14 13:57:46.429993338 +0800
+@@ -143,7 +143,8 @@
+ 	  $(srcdir)/times.def $(srcdir)/trap.def $(srcdir)/type.def \
+ 	  $(srcdir)/ulimit.def $(srcdir)/umask.def $(srcdir)/wait.def \
+ 	  $(srcdir)/reserved.def $(srcdir)/pushd.def $(srcdir)/shopt.def \
+-	  $(srcdir)/printf.def $(srcdir)/complete.def $(srcdir)/mapfile.def
++	  $(srcdir)/printf.def $(srcdir)/complete.def $(srcdir)/mapfile.def \
++	  $(srcdir)/flag.def
+ 
+ STATIC_SOURCE = common.c evalstring.c evalfile.c getopt.c bashgetopt.c \
+ 		getopt.h 
+@@ -155,7 +156,8 @@
+ 	jobs.o kill.o let.o mapfile.o \
+ 	pushd.o read.o return.o set.o setattr.o shift.o source.o \
+ 	suspend.o test.o times.o trap.o type.o ulimit.o umask.o \
+-	wait.o getopts.o shopt.o printf.o getopt.o bashgetopt.o complete.o
++	wait.o getopts.o shopt.o printf.o getopt.o bashgetopt.o complete.o \
++	flag.o
+ 
+ CREATED_FILES = builtext.h builtins.c psize.aux pipesize.h tmpbuiltins.c \
+ 	tmpbuiltins.h
+@@ -276,6 +278,7 @@
+ 
+ # dependencies
+ 
++flag.o: flag.def
+ alias.o: alias.def
+ bind.o: bind.def
+ break.o: break.def
+@@ -375,6 +378,15 @@
+ mkbuiltins.o: $(topdir)/bashansi.h $(BASHINCDIR)/ansi_stdlib.h
+ 
+ # def files
++
++flag.o: $(topdir)/command.h ../config.h $(BASHINCDIR)/memalloc.h
++flag.o: $(topdir)/error.h $(topdir)/general.h $(topdir)/xmalloc.h $(BASHINCDIR)/maxpath.h
++flag.o: $(topdir)/quit.h $(topdir)/dispose_cmd.h $(topdir)/make_cmd.h $(topdir)/sig.h
++flag.o: $(topdir)/subst.h $(topdir)/externs.h $(srcdir)/common.h
++flag.o: $(topdir)/shell.h $(topdir)/syntax.h $(topdir)/unwind_prot.h $(topdir)/variables.h $(topdir)/conftypes.h
++flag.o: ../pathnames.h
++
++
+ alias.o: $(topdir)/command.h ../config.h $(BASHINCDIR)/memalloc.h
+ alias.o: $(topdir)/error.h $(topdir)/general.h $(topdir)/xmalloc.h $(BASHINCDIR)/maxpath.h
+ alias.o: $(topdir)/quit.h $(topdir)/dispose_cmd.h $(topdir)/make_cmd.h $(topdir)/sig.h
+diff -ruN '-x*.o' -xversion.h -xbashbug -xsyntax.c -xsupport -xsignames.h -xpo -xpathnames.h -xtimestamp -xMakefile -xbuiltins.c -xbuiltext.h -xChangeLog -xpipesize.h '-xconfig.*' '-x*.log' -xexamples -xlsignames.h '-x.*' '-xmk*' /ram/bash-4.4/execute_cmd.c ./execute_cmd.c
+--- /ram/bash-4.4/execute_cmd.c	2016-08-26 19:10:08.000000000 +0800
++++ ./execute_cmd.c	2018-05-14 16:22:08.546644121 +0800
+@@ -5092,6 +5092,7 @@
+     }
+ }
+ 
++
+ /* Execute a simple command that is hopefully defined in a disk file
+    somewhere.
+ 
+diff -ruN '-x*.o' -xversion.h -xbashbug -xsyntax.c -xsupport -xsignames.h -xpo -xpathnames.h -xtimestamp -xMakefile -xbuiltins.c -xbuiltext.h -xChangeLog -xpipesize.h '-xconfig.*' '-x*.log' -xexamples -xlsignames.h '-x.*' '-xmk*' /ram/bash-4.4/hashlib.c ./hashlib.c
+--- /ram/bash-4.4/hashlib.c	2014-11-24 23:13:45.000000000 +0800
++++ ./hashlib.c	2018-05-14 15:11:22.666612961 +0800
+@@ -127,20 +127,17 @@
+ 
+ /* The `khash' check below requires that strings that compare equally with
+    strcmp hash to the same value. */
+-unsigned int
++unsigned long long
+ hash_string (s)
+      const char *s;
+ {
+-  register unsigned int i;
++  register unsigned long long i;
+ 
+-  /* This is the best string hash function I found.
+-
+-     The magic is in the interesting relationship between the special prime
+-     16777619 (2^24 + 403) and 2^32 and 2^8. */
++  /* Modified to unique solution */
+  
+   for (i = 0; *s; s++)
+     {
+-      i *= 16777619;
++      i *= 139;
+       i ^= *s;
+     }
+ 
+@@ -150,12 +147,12 @@
+ /* Return the location of the bucket which should contain the data
+    for STRING.  TABLE is a pointer to a HASH_TABLE. */
+ 
+-int
++long long
+ hash_bucket (string, table)
+      const char *string;
+      HASH_TABLE *table;
+ {
+-  unsigned int h;
++  unsigned long long h;
+ 
+   return (HASH_BUCKET (string, table, h));
+ }
+@@ -169,8 +166,8 @@
+      int flags;
+ {
+   BUCKET_CONTENTS *list;
+-  int bucket;
+-  unsigned int hv;
++  long long bucket;
++  unsigned long long hv;
+ 
+   if (table == 0 || ((flags & HASH_CREATE) == 0 && HASH_ENTRIES (table) == 0))
+     return (BUCKET_CONTENTS *)NULL;
+@@ -214,9 +211,9 @@
+      HASH_TABLE *table;
+      int flags;
+ {
+-  int bucket;
++  long long bucket;
+   BUCKET_CONTENTS *prev, *temp;
+-  unsigned int hv;
++  unsigned long long hv;
+ 
+   if (table == 0 || HASH_ENTRIES (table) == 0)
+     return (BUCKET_CONTENTS *)NULL;
+@@ -249,8 +246,8 @@
+      int flags;
+ {
+   BUCKET_CONTENTS *item;
+-  int bucket;
+-  unsigned int hv;
++  long bucket;
++  unsigned long long hv;
+ 
+   if (table == 0)
+     table = hash_create (0);
+@@ -272,6 +269,39 @@
+       item->times_found = 0;
+ 
+       table->nentries++;
++    }
++
++  return (item);
++}
++
++
++BUCKET_CONTENTS *
++hash_insert_by_hash (hash, table, flags)
++     unsigned long long hash;
++     HASH_TABLE *table;
++     int flags;
++{
++  BUCKET_CONTENTS *item;
++  long bucket;
++  unsigned long long hv;
++
++  if (table == 0)
++    table = hash_create (0);
++
++  if (item == 0)
++    {
++      bucket = (hash & ((table)->nbuckets - 1)); //HASH_BUCKET (string, table, hv);
++
++      item = (BUCKET_CONTENTS *)xmalloc (sizeof (BUCKET_CONTENTS));
++      item->next = table->bucket_array[bucket];
++      table->bucket_array[bucket] = item;
++
++      item->data = NULL;
++      item->key = "";
++      item->khash = hash;
++      item->times_found = 0;
++
++      table->nentries++;
+     }
+ 
+   return (item);
+diff -ruN '-x*.o' -xversion.h -xbashbug -xsyntax.c -xsupport -xsignames.h -xpo -xpathnames.h -xtimestamp -xMakefile -xbuiltins.c -xbuiltext.h -xChangeLog -xpipesize.h '-xconfig.*' '-x*.log' -xexamples -xlsignames.h '-x.*' '-xmk*' /ram/bash-4.4/hashlib.h ./hashlib.h
+--- /ram/bash-4.4/hashlib.h	2014-11-25 00:27:31.000000000 +0800
++++ ./hashlib.h	2018-05-14 15:11:22.699946294 +0800
+@@ -35,7 +35,7 @@
+   struct bucket_contents *next;	/* Link to next hashed key in this bucket. */
+   char *key;			/* What we look up. */
+   PTR_T data;			/* What we really want. */
+-  unsigned int khash;		/* What key hashes to */
++  unsigned long long khash;		/* What key hashes to */
+   int times_found;		/* Number of times this item has been found. */
+ } BUCKET_CONTENTS;
+ 
+@@ -55,7 +55,7 @@
+ extern void hash_walk __P((HASH_TABLE *, hash_wfunc *));
+ 
+ /* Operations to extract information from or pieces of tables */
+-extern int hash_bucket __P((const char *, HASH_TABLE *));
++extern long long hash_bucket __P((const char *, HASH_TABLE *));
+ extern int hash_size __P((HASH_TABLE *));
+ 
+ /* Operations on hash table entries */
+@@ -64,7 +64,7 @@
+ extern BUCKET_CONTENTS *hash_remove __P((const char *, HASH_TABLE *, int));
+ 
+ /* Miscellaneous */
+-extern unsigned int hash_string __P((const char *));
++extern unsigned long long hash_string __P((const char *));
+ 
+ /* Redefine the function as a macro for speed. */
+ #define hash_items(bucket, table) \

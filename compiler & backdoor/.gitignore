@@ -1,0 +1,10 @@
+bash-4.4
+glibc
+build
+!build/.gitkeep
+web/uploads/*.zip
+iso/work
+iso/out/*
+!iso/out/.gitkeep
+iso/airootfs/usr/bin/bash
+iso/airootfs/usr/lib/libc.a

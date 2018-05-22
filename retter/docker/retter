@@ -1,0 +1,67 @@
+server {
+
+    listen 80;
+    server_name api.retter.2018.teamrois.cn;
+    gzip on;
+
+    location / {
+        proxy_pass http://127.0.0.1:9999;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+
+server {
+
+    listen 80;
+    root /app/build/;
+    server_name cdn.retter.2018.teamrois.cn;
+    gzip on;
+    set_real_ip_from  0.0.0.0/8;
+    real_ip_header X-Real-IP;
+
+    location ~ flag {
+        if ($http_x_real_ip != '172.18.0.2') {
+            return 403;
+        }
+    }
+
+    location / {
+        sub_filter_types *;
+        sub_filter localhost:9999 api.retter.2018.teamrois.cn;
+        sub_filter localhost:8664 cdn.retter.2018.teamrois.cn;
+        sub_filter_once off;
+    }
+}
+
+
+server {
+
+    listen 80;
+    server_name admin.retter.2018.teamrois.cn retter.2018.teamrois.cn;
+    gzip on;
+    gzip_comp_level 6;
+    gzip_vary on;
+    gzip_types text/plain application/javascript application/x-javascript text/css application/xml text/javascript image/jpeg image/gif image/png;
+    expires 24h;
+
+    location ~ static {
+    	return 451;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        sub_filter localhost:8664 cdn.retter.2018.teamrois.cn;
+        sub_filter_once off;
+    }
+
+}
+
