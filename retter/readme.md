@@ -31,7 +31,7 @@ Payload:
 
 We get a hint that tells us the flag is hidden in the component. Wait.. What is the component? We already know that this site is based on React, so the ``component`` here most likely means React Component. According to [React.Component - React](https://reactjs.org/docs/react-component.html), we know each React component have two instance properties: ``state`` and ``props``. The flag probably is hidden in one of them. Now our task is to try to get the ``state`` or ``props`` of this component.
 
-How to get the flag?
+How to get the flag? (5/22/2018 Updated)
 
 ### Way 1 - React Dev Tool
 
@@ -122,8 +122,26 @@ Let's read ``webpackJsonp`` in ``manifest.js``.
 ```
 We don't need to import ``flag.js``, ``webpackJsonp`` redefined in ``manifest.js`` will call the function we defined before, and React will auto import ``flag.js``.
 
-It's too easy so I made a bypassable filter in ``docker/build.sh``. [CyKor](https://ctftime.org/team/369) and ``张衡路窝里斗大学一楼食堂彻底完蛋啦`` implemented a ``webpackJsonp`` will send data to their server but return of ``toString()`` is as normal one to bypass the filter. [Bushwhackers](https://ctftime.org/team/586) found that ``webpackJsonp`` will return the loaded script as requested by the third parameter.
+It's too easy so I made a bypassable filter in ``docker/build.sh``.
+
+- [CyKor](https://ctftime.org/team/369) implemented a ``webpackJsonp`` will send data to their server but return of ``toString()`` is as normal one to bypass the filter.
+- [Bushwhackers](https://ctftime.org/team/586) found that ``webpackJsonp`` will return the loaded script as requested by the third parameter.
+- ``张衡路窝里斗大学一楼食堂彻底完蛋啦`` see: https://github.com/zsxsoft/my-rctf-2018/issues/1
+
 
 ### Way 3 - iframe + ref
 [OpenToAll](https://ctftime.org/team/9135) found it, see: https://devcraft.io/2018/05/22/retter-rctf-2018.html
 
+### Way 4 - Read states from DOM
+
+We still have two sub-ways here Haha.
+
+React will add ``_reactRootContainer`` to root element, and we can read it by ``document.getElementById('root')._reactRootContainer._internalRoot``. React 16's ``FiberNode`` is implemented by linked-list, so just traverse the list and you can get flag.
+
+The another way is, each DOMs rendered by React have ``__reactInternalInstancexxxxxx`` attribute, and its type is ``FiberNode`` in React 16.
+
+![](screenshot/4.png)
+
+Just read it and get state. Payload:
+
+``document.querySelector('flag')[Object.keys(document.querySelector('flag'))[0]].return.memoizedState``
