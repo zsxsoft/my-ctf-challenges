@@ -1,0 +1,38 @@
+version: '3'
+services:
+  bot:
+    build: ./bot
+    ports:
+      - "127.0.0.1:12314:9000"
+    networks:
+      testing_net:
+        ipv4_address: 172.28.1.10
+    extra_hosts:
+      - "jail.2019.rctf.rois.io:172.28.1.100"
+  web:
+    build: ./website
+    ports:
+      - "12315:80"
+    networks:
+      testing_net:
+        ipv4_address: 172.28.1.100
+    extra_hosts:
+      - "mysql:172.28.1.120"
+  mysql:
+    image: mysql:8.0.15
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    volumes:
+      - ./import.sql:/docker-entrypoint-initdb.d/dump.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: justAUselessPassword
+      MYSQL_DATABASE: jail-password
+    networks:
+      testing_net:
+        ipv4_address: 172.28.1.120
+networks:
+    testing_net:
+        ipam:
+            driver: default
+            config:
+                - subnet: 172.28.0.0/16

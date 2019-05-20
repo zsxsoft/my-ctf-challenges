@@ -1,0 +1,8 @@
+version: '2.4'
+services:
+  nextphp:
+    build: .
+    ports:
+      - "0.0.0.0:80:80"
+    mem_limit: 2048M
+    restart: always
