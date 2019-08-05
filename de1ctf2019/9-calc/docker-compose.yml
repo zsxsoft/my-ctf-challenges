@@ -1,0 +1,54 @@
+version: '2'
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "0.0.0.0:3000:3000"
+    mem_limit: 300M
+    restart: always
+    networks:
+      9calc_network:
+        ipv4_address: 10.0.20.10
+      9calc_out_network:
+        ipv4_address: 10.0.30.10
+  backend-node:
+    build: ./backend-node
+    volumes:
+       - ./flags/flag1:/flag
+    mem_limit: 200M
+    restart: always
+    networks:
+      9calc_network:
+        ipv4_address: 10.0.20.11
+  backend-python:
+    build: ./backend-python
+    ulimits:
+      nproc: 15
+    volumes:
+       - ./flags/flag2:/flag
+    mem_limit: 200M
+    restart: always
+    networks:
+      9calc_network:
+        ipv4_address: 10.0.20.12
+  backend-php:
+    build: ./backend-php
+    volumes:
+       - ./flags/flag3:/flag
+    mem_limit: 200M
+    restart: always
+    networks:
+      9calc_network:
+        ipv4_address: 10.0.20.13
+networks:
+    9calc_network:
+        internal: true
+        ipam:
+            driver: default
+            config:
+                - subnet: 10.0.20.0/24
+    9calc_out_network:
+        ipam:
+            driver: default
+            config:
+                - subnet: 10.0.30.0/24
