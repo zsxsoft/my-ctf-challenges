@@ -1,0 +1,8 @@
+version: '2.4'
+services:
+  swoole:
+    build: .
+    volumes:
+      - ./solution:/solution
+    ports:
+      - "9501:9501"

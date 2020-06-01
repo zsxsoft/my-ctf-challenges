@@ -1,0 +1,26 @@
+2014-01-01 open Assets:Checking
+2010-01-01 open Equity:Opening-Balances
+
+2014-01-02 * "Deposit"
+  Assets:Checking           100.00 USD
+  Equity:Opening-Balances
+
+2007-02-01 open Assets:US:BofA:Savings              USD
+2007-02-01 open Income:US:BofA:Savings:Interest     USD
+2012-03-01 open Assets:US:Etrade:Main:Cash            USD
+2012-03-01 open Assets:US:Etrade:Main:IEFA            IEFA
+2012-03-01 open Income:US:Etrade:Main:DividendNoTax   USD
+2012-03-01 open Liabilities:US:Amex:Platinum          USD
+
+;2014-06-08 * "ONLINE PAYMENT - THANK YOU"
+2014-06-10 * "AMEX EPAYMENT    ACH PMT"
+  Liabilities:US:Amex:Platinum       923.24 USD
+  Assets:US:Etrade:Main:Cash           -923.24 USD
+
+2015-05-28 open Assets:CA:BofA:Checking  USD
+
+2015-05-28 * "Initialize account"
+  Equity:Opening-Balances                    -1256.35 USD
+  Assets:CA:BofA:Checking                     1256.35 USD
+
+2015-07-01 balance Assets:CA:BofA:Checking    1256.35 USD
