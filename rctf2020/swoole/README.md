@@ -59,7 +59,7 @@ echo "\n";
 
 ```
 
-## Explanation
+## Explaination
 
 The only way I found which can pass arguments to function is this: https://github.com/swoole/library/blob/8eebda9cd87bf37164763b059922ab393802258b/src/core/ConnectionPool.php#L89
 ```php
