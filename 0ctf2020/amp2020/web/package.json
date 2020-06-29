@@ -1,0 +1,40 @@
+{
+  "name": "amp",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "amphtml-validator": "^1.0.30",
+    "axios": "^0.19.2",
+    "cheerio": "^1.0.0-rc.3",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "ejs": "^3.0.2",
+    "express": "~4.16.1",
+    "express-session": "^1.17.1",
+    "http-errors": "~1.6.3",
+    "ip": "^1.1.5",
+    "is-ip": "^3.1.0",
+    "materialize-css": "^1.0.0-rc.2",
+    "morgan": "~1.9.1",
+    "nano": "^8.2.2",
+    "puppeteer": "1.19.0",
+    "session-file-store": "^1.4.0",
+    "url-parse": "^1.4.7",
+    "uuid": "^7.0.3"
+  },
+  "devDependencies": {
+    "@types/cheerio": "^0.22.17",
+    "@types/ip": "^1.1.0",
+    "@types/puppeteer": "^2.0.1",
+    "@types/uuid": "^7.0.2",
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1"
+  }
+}

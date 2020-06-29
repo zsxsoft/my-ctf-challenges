@@ -1,0 +1,16 @@
+#!/usr/bin/env node
+
+const cp = require('child_process')
+const fn = () => {
+  console.log('Starting...')
+  try { cp.execSync('pkill -9 node') } catch (e) {}
+  try { cp.execSync('pkill -9 chromium') } catch (e) {}
+  try {
+    const p = cp.exec(`${__dirname}/www`)
+    p.stdout.on('data', chunk => process.stdout.write(chunk))
+    p.stderr.on('data', chunk => process.stderr.write(chunk))
+  } catch (e) {}
+}
+
+setInterval(fn, 60 * 5000)
+setTimeout(fn, 5000)

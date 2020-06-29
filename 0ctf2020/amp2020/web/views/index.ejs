@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AMP Screenshot</title>
+  <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">-->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/materialize-css@1.0.0/dist/css/materialize.min.css"
+    integrity="sha256-OweaP/Ic6rsV+lysfyS4h+LM6sRwuO3euTYfr6M124g=" crossorigin="anonymous">
+  <style>
+    body {
+      min-height: 100vh;
+    }
+    .container .row {
+      margin-bottom: 0;
+    }
+    #natsume {
+      position: fixed;
+      right: 1em;
+      bottom: 0;
+    }
+    #natsume img {
+      width: 300px;
+    }
+    #result .card {
+      min-height: calc(100vh - 580px);
+    }
+    #input-text {
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      min-height: 300px;
+    }
+
+    #preloader {
+      text-align: center;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="row">
+      <div class="col s12">
+        <div class="card">
+          <div class="card-content">
+            <span class="card-title">Input</span>
+            <ul class="tabs">
+              <li class="tab col s3"><a href="#text-input" data-type="text">Text</a></li>
+              <li class="tab col s3"><a href="#url-input" data-type="url">URL</a></li>
+            </ul>
+            <div id="text-input">
+              <div class="input-field">
+                <div id="input-text"><%=ampTemplate%></div>
+              </div>
+            </div>
+            <div id="url-input" class="col s12">Only localhost is allowed!</div>
+          </div>
+          <div class="card-action">
+            <a class="waves-effect waves-light btn" id="take-screenshot" href="#">Take screenshot</a>
+          </div>
+        </div>
+      </div>
+      <div class="row" id="result">
+        <div class="col s12">
+          <div class="card">
+            <div class="card-content">
+              <span class="card-title">Result</span>
+              <div id="preloader">
+                <div class="preloader-wrapper small active">
+                  <div class="spinner-layer">
+                    <div class="circle-clipper left">
+                      <div class="circle"></div>
+                    </div>
+                    <div class="gap-patch">
+                      <div class="circle"></div>
+                    </div>
+                    <div class="circle-clipper right">
+                      <div class="circle"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div id="content">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <!--
+  <div id="natsume">
+    <img src="/images/2.png">
+  </div>
+-->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.min.js"
+    integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/materialize-css@1.0.0/dist/js/materialize.min.js"
+    integrity="sha256-U/cHDMTIHCeMcvehBv1xQ052bPSbJtbuiw4QA9cTKz0=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ace-builds@1.4.10/src-min/ace.js"
+    integrity="sha256-Kr5Mbwq/xwJYw6XU4NR519/iosGvECYMyMU8IZ/rQok=" crossorigin="anonymous"></script>
+  <script>
+    window.ctfhelper = {}
+    const editor = ace.edit("input-text")
+    const failImage = '/images/1.png'
+    const successImage = '/images/2.png'
+    const waitingImage = '/images/3.png'
+    const waiting = () => {
+      if ($('#take-screenshot').hasClass('disabled')) {
+        $('#take-screenshot').removeClass('disabled')
+        $('#preloader').hide()
+      } else {
+        $('#take-screenshot').addClass('disabled')
+        $('#preloader').show()
+        $('#content').html('')
+        // $('#natsume img').attr('src', waitingImage)
+      }
+    }
+    $(() => {
+      $('.tabs').tabs()
+      editor.session.setMode("ace/mode/html")
+      $('#take-screenshot').click(e => {
+        e.preventDefault()
+        const type = $('.tab a.active').data('type')
+        waiting()
+        $.post('/validator', {
+          type,
+          input: editor.getValue(),
+          ...window.ctfhelper
+        }).then(p => {
+          let html = ''
+          if (p.status === 'FAIL') {
+
+            html = '<table class="highlight striped"><thead><tr><th>Line</th><th>Message</th></tr></thead><tbody>'
+            p.errors.forEach(item => {
+              html += `<tr><td>${item.line}</td><td>${item.message.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</td></tr>`
+            })
+            html += '</tbody></table>'
+            // $('#natsume img').attr('src', failImage)
+          } else {
+            html = `<img src="data:image/png;base64,${p.image}">`
+            // $('#natsume img').attr('src', successImage)
+          }
+          $('#content').html(html)
+          waiting()
+        }).fail(p => {
+          let message = ((p && p.message) ? p.message : p).toString()
+          message = message.replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          $('#content').html(`<p>Server Error: ${message}</p>`)
+          waiting()
+          // $('#natsume img').attr('src', failImage)
+        })
+      })
+    })
+  </script>
+
+</body>
+
+</html>
