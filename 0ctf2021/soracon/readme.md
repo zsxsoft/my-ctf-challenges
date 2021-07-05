@@ -45,7 +45,7 @@ If we add a printf before https://github.com/php/pecl-search_engine-solr/blob/2.
 O:10:"SolrObject":1:{s:8:"response";O:10:"SolrObject":3:{s:8:"numFound";i:1;s:5:"start";i:0;s:4:"docs";a:1:{i:0;O:10:"SolrObject":2:{s:1:"a";i:123456;s:1:"b";i:12345678;}}}}
 ```
 
-You can't use `123456;i:0;i:1` like SQL injection to add a new element into `SolrObject`(Check ![var_unserializer.re](https://github.com/php/php-src/blob/php-7.4.20/ext/standard/var_unserializer.re) for detail), but you can manually close all brackets. PHP will stop reading all the remaining characters if unserialization is done(brackets are all closed).
+You can't use `123456;i:0;i:1` like SQL injection to add a new element into `SolrObject`(Check [var_unserializer.re](https://github.com/php/php-src/blob/php-7.4.20/ext/standard/var_unserializer.re) for detail), but you can manually close all brackets. PHP will stop reading all the remaining characters if unserialization is done(brackets are all closed).
 
 ```php
 php > print_r(unserialize('a:2:{i:0;i:123456;i:1;i:12345678;}'));
