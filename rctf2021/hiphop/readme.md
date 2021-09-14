@@ -38,4 +38,4 @@ req('{"command":"attach","arguments":{"name":"Attach","type":"hhvm","request":"a
 
 ## Unintended solution
 
-No one bypassed `hhvm.server.whitelist_exec=true` in my one. All solved teams (7 teams) used an unintended function that did not check the whitelist to bypass it, it's better to check theirs writeup. I will update it here soon.
+No one bypassed `hhvm.server.whitelist_exec=true` in my way. All solved teams (7 teams) used an unintended function that did not check the whitelist to bypass it, it's better to check theirs writeup. I will update it here soon.
