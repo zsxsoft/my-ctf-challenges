@@ -1,0 +1,29 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: testvm
+spec:
+  template:
+    metadata:
+    spec:
+      domain:
+        devices:
+          autoattachPodInterface: false
+          disks:
+            - name: containerdisk
+              disk:
+                bus: virtio
+            - name: hostdisk
+              disk:
+                bus: virtio
+                readonly: true
+          interfaces:
+        resources:
+          requests:
+            memory: 64M
+      networks:
+      volumes:
+        - name: containerdisk
+          containerDisk:
+            image: quay.io/kubevirt/cirros-container-disk-demo
+          name: hostdisk

@@ -1,0 +1,23 @@
+---
+apiVersion: kubevirt.io/v1
+kind: KubeVirt
+metadata:
+  name: kubevirt
+  namespace: kubevirt
+spec:
+  certificateRotateStrategy: {}
+  configuration:
+    developerConfiguration:
+      featureGates:
+        - MultiArchitecture
+        - DisableCustomSELinuxPolicy
+        - DisableMDEVConfiguration
+        - Sidecar
+        - AutoResourceLimitsGate
+        - HostDisk
+      # if you can send me a KVM 0day, I will be very happy!
+      useEmulation: true
+  customizeComponents: {}
+  imagePullPolicy: IfNotPresent
+  workloadUpdateStrategy: {}
+

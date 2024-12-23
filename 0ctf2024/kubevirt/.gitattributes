@@ -1,0 +1,2 @@
+virtctl-v1.3.1-linux-amd64 filter=lfs diff=lfs merge=lfs -text
+calicoctl filter=lfs diff=lfs merge=lfs -text

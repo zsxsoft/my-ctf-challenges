@@ -1,0 +1,40 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: kubevirt-vm-manager
+  namespace: default
+rules:
+- apiGroups: ["kubevirt.io"]
+  resources: ["virtualmachines"]
+  verbs: ["create", "delete", "get"]
+- apiGroups: ["subresources.kubevirt.io"]
+  resources: ["virtualmachineinstances/console"]
+  verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kubevirt-vm-manager-binding
+  namespace: default
+subjects:
+- kind: ServiceAccount
+  name: kubevirt-vm-user
+  namespace: default
+roleRef:
+  kind: Role
+  name: kubevirt-vm-manager
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kubevirt-vm-user
+  namespace: default
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kubevirt-vm-user-token
+  annotations:
+    kubernetes.io/service-account.name: kubevirt-vm-user
+type: kubernetes.io/service-account-token

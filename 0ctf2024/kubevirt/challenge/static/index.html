@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <title>KubeVirt</title>
+  <link rel="stylesheet" href="/static/pico.min.css" />
+  <link href="/static/xterm@5.3.0.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/static/monaco-editor@0.52.0.main.min.css">
+  <script src="/static/xterm@5.3.0.min.js"></script>
+  <script src="/static/monaco@0.52.0/min/vs/loader.js"></script>
+  <style>
+    .grid {grid-template-columns: 1fr 200px 1fr}
+    #button-format { width: 100%; margin-bottom: 1em; }
+    @media screen and (max-width: 1024px) {
+      .grid {grid-template-columns: 1fr 100px 1fr}
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container-fluid">
+    <header>
+      <h1 class="title">
+        KubeVirt
+      </h1>
+    </header>
+    <div class="grid">
+      <div class="container container-left">
+        <form class="box">
+          <div id="container" style="height:600px;border:1px solid grey"></div>
+          <p>
+          <div class="h-captcha" id="hcaptcha"></div>
+          <script src="https://js.hcaptcha.com/1/api.js?onload=doSomething&render=explicit" async defer></script>
+          </p>
+        </form>
+      </div>
+      <div>
+        <button class="outline button" id="button-format">Format</button>
+        <button class="outline button" type="submit" id="button-submit" disabled>Run</button>
+      </div>
+      <div class="box">
+        <div id="terminal"></div>
+      </div>
+    </div>
+    </section>
+
+
+    <script>
+      var editor, term, websocket
+      require.config({ paths: { 'vs': location.origin + '/static/monaco@0.52.0/min/vs' } });
+      term = new Terminal({ convertEol: true });
+      term.open(document.getElementById('terminal'));
+      term.onData((d) => {
+        websocket.send(d)
+      })
+      require(['vs/editor/editor.main'], function () {
+        editor = monaco.editor.create(document.getElementById('container'), {
+          value: document.getElementById('vm-template').innerText,
+          language: 'yaml'
+        });
+        window.addEventListener('resize', () => {
+          editor.layout();
+        })
+      });
+
+      function doSomething() {
+        const parseButton = document.getElementById('button-submit')
+        const formatButton = document.getElementById('button-format')
+        const code = document.getElementById('code')
+
+        formatButton.addEventListener('click', e => {
+          e.preventDefault()
+          fetch('/api/format', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ yaml: editor.getValue() })
+          }).then(a => {
+            if (a.status === 200) {
+              return a.text().then(a => {
+                editor.setValue(a)
+              })
+            } else {
+              return a.text().then(a => {
+                term.reset()
+                term.write(a)
+              })
+            }
+          })
+
+        })
+        parseButton.removeAttribute('disabled')
+        parseButton.addEventListener('click', (e) => {
+          e.preventDefault()
+          term.reset()
+          term.write('Please wait...\n')
+          parseButton.setAttribute('disabled', 'disabled')
+          /*
+                    hcaptcha.render('hcaptcha', {
+                      sitekey: '812fb8d8-b272-4eb9-8442-5f322528b22d'
+                    })
+                    hcaptcha.execute({ async: true })
+                    .then(({ response, key }) =>
+          */
+          const response = ''
+          fetch('/api/run', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 'h-captcha-response': response, yaml: editor.getValue() })
+          })
+            //          )
+            .then(a => a.json())
+            .then(a => {
+              if (a.error) {
+                term.write(`${a.error}\n`)
+              } else {
+                term.write(`${a.name}\n`)
+                handleWS(a.name)
+              }
+            })
+            .finally(() => {
+              parseButton.removeAttribute('disabled')
+              hcaptcha.reset()
+            })
+        })
+      }
+
+      function handleWS(id) {
+        websocket = new WebSocket(`/api/console?name=${id}`);
+        websocket.addEventListener('message', (event) => {
+          if (event.data instanceof Blob) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              if (e.target.readyState === FileReader.DONE) {
+                term.write(e.target.result)
+              }
+            }
+            reader.readAsText(event.data)
+          } else {
+            term.write(event.data)
+          }
+        })
+      }
+    </script>
+    <script id="vm-template" type="text/yaml">apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: testvm
+spec:
+  running: true
+  template:
+    metadata:
+      labels:
+        kubevirt.io/size: small
+        kubevirt.io/domain: testvm
+    spec:
+      domain:
+        devices:
+          disks:
+            - name: containerdisk
+              disk:
+                bus: virtio
+            - name: cloudinitdisk
+              disk:
+                bus: virtio
+          interfaces:
+        resources:
+          requests:
+            memory: 64M
+      volumes:
+        - name: containerdisk
+          containerDisk:
+            image: quay.io/kubevirt/cirros-container-disk-demo
+        - name: cloudinitdisk
+          cloudInitNoCloud:
+            userDataBase64: SGkuXG4=
+    </script>
+</body>
+
+</html>

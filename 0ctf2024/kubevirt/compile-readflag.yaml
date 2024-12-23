@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: ds-readflag
+  labels:
+    app: build-readflag
+spec:
+  selector:
+    matchLabels:
+      app: build-readflag
+  template:
+    metadata:
+      labels:
+        app: build-readflag
+    spec:
+      hostNetwork: false
+      restartPolicy: Always
+      containers:
+      - name: sleep
+        image: muslcc/x86_64:x86_64-linux-musl
+        command: [ "/bin/sh", "-c", "--" ]
+        args: [ "while true; do sleep 30; done;" ]
+        volumeMounts:
+        - name: host-root
+          mountPath: /host
+          readOnly: false
+        lifecycle:
+          preStop:
+            exec:
+              command: ["rm", "-f", "/host/readflag"]
+      initContainers:
+      - name: build
+        image: muslcc/x86_64:x86_64-linux-musl
+        env:
+        - name: FLAG
+          value: "flag{test1234}"
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            echo '#include <stdio.h>
+            int main(){puts("'"$FLAG"'");}' > readflag.c && \
+            gcc readflag.c -o /host/readflag -static -Os -s -Wl,--build-id=none -ffunction-sections -fdata-sections -Wl,--gc-sections && \
+            rm readflag.c && \
+            chmod 0111 /host/readflag
+        volumeMounts:
+        - name: host-root
+          mountPath: /host
+        securityContext:
+          runAsUser: 0
+      volumes:
+      - name: host-root
+        hostPath:
+          path: /etc
+          type: Directory
+      terminationGracePeriodSeconds: 30

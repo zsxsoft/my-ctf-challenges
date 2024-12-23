@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  kubevirt:
+    build: .
+    network_mode: "host"
+    restart: always
+    environment:
+      - KUBECONFIG=/app/.kubeconfig
+      - QUAY_HOST=quay.io
+      # China: quay.nju.edu.cn
+    volumes:
+      - ./.kubeconfig:/app/.kubeconfig
+      - ./static:/app/static
+      - ./logs:/app/logs

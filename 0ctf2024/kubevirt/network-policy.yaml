@@ -1,0 +1,14 @@
+# This maybe not working on your cluster
+# But in the server this will always work
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all-egress-and-ingress
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      kubevirt.io: virt-launcher
+  policyTypes:
+  - Ingress
+  - Egress
