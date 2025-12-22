@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  duckknows:
+    build: .
+    networks:
+      - duckknows
+    environment:
+      - FLAG=flag{123456}
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - duckknows
+      - duckknows-external
+    restart: unless-stopped
+
+networks:
+  duckknows:
+    internal: true
+  duckknows-external:
