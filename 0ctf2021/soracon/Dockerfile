@@ -1,10 +1,10 @@
 FROM php:7.4-apache
 RUN apt update && apt install -y libcurl4-gnutls-dev libxml2 libxml2-dev && \
-    pecl install solr && \
+    pecl install solr-2.5.1 && \
     echo extension=solr.so >> /usr/local/etc/php/php.ini && \
-    pecl install psr && \
+    pecl install psr-1.1.0 && \
     echo extension=psr.so >> /usr/local/etc/php/php.ini && \
-    pecl install phalcon && \
+    pecl install phalcon-4.1.2 && \
     echo extension=phalcon.so >> /usr/local/etc/php/php.ini && \
     echo display_errors=Off >> /usr/local/etc/php/php.ini
 COPY flag /flag

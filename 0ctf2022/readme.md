@@ -2,6 +2,11 @@
 
 2 solves (haha)
 
+```bash
+docker pull ghcr.io/zsxsoft/my-ctf-challenges:0ctf2022-jabasass
+```
+
+
 This CTF challenge is based on Wildfly and GraalVM.
 
 1. Bypass nginx limitation. 

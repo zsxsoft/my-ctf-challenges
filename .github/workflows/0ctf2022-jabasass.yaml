@@ -1,9 +1,9 @@
-name: springduck
+name: jabasass
 on:
   push:
     paths:
-      - ./0ctf2025
-      - .github/workflows/0ctf2025-springduck.yaml
+      - ./0ctf2022
+      - .github/workflows/0ctf2022-jabasass.yaml
 
 env:
   REGISTRY: ghcr.io
@@ -30,6 +30,6 @@ jobs:
         with:
           platforms: linux/amd64
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:0ctf2025-springduck
-          context: 0ctf2025/springduck/challenge
-          file: ./0ctf2025/springduck/challenge/Dockerfile
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:0ctf2022-jabasass
+          context: 0ctf2022
+          file: ./0ctf2022/Dockerfile

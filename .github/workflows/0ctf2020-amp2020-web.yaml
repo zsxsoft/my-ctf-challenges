@@ -1,9 +1,9 @@
-name: springduck
+name: amp2020-web
 on:
   push:
     paths:
-      - ./0ctf2025
-      - .github/workflows/0ctf2025-springduck.yaml
+      - ./0ctf2020/amp2020/web
+      - .github/workflows/0ctf2020-amp2020-web.yaml
 
 env:
   REGISTRY: ghcr.io
@@ -30,6 +30,7 @@ jobs:
         with:
           platforms: linux/amd64
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:0ctf2025-springduck
-          context: 0ctf2025/springduck/challenge
-          file: ./0ctf2025/springduck/challenge/Dockerfile
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:0ctf2020-amp2020-web
+          context: 0ctf2020/amp2020/web
+          file: ./0ctf2020/amp2020/web/Dockerfile
+#

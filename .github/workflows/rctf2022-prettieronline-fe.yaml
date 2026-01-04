@@ -1,9 +1,9 @@
-name: springduck
+name: prettieronline-fe
 on:
   push:
     paths:
-      - ./0ctf2025
-      - .github/workflows/0ctf2025-springduck.yaml
+      - ./rctf2022/prettieronline/fe
+      - .github/workflows/rctf2022-prettieronline-fe.yaml
 
 env:
   REGISTRY: ghcr.io
@@ -30,6 +30,6 @@ jobs:
         with:
           platforms: linux/amd64
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:0ctf2025-springduck
-          context: 0ctf2025/springduck/challenge
-          file: ./0ctf2025/springduck/challenge/Dockerfile
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:rctf2022-prettieronline-fe
+          context: rctf2022/prettieronline/fe
+          file: ./rctf2022/prettieronline/fe/Dockerfile

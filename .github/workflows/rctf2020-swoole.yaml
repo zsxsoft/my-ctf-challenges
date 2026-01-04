@@ -1,9 +1,9 @@
-name: springduck
+name: swoole
 on:
   push:
     paths:
-      - ./0ctf2025
-      - .github/workflows/0ctf2025-springduck.yaml
+      - ./rctf2020
+      - .github/workflows/rctf2020-swoole.yaml
 
 env:
   REGISTRY: ghcr.io
@@ -30,6 +30,6 @@ jobs:
         with:
           platforms: linux/amd64
           push: true
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:0ctf2025-springduck
-          context: 0ctf2025/springduck/challenge
-          file: ./0ctf2025/springduck/challenge/Dockerfile
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:rctf2020-swoole
+          context: rctf2020/swoole
+          file: ./rctf2020/swoole/Dockerfile

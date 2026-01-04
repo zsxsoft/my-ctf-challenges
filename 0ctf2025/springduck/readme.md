@@ -2,4 +2,6 @@
 
 [English](readme_en.md)
 
-[Challenge Docker](https://github.com/zsxsoft/my-ctf-challenges/pkgs/container/fava-management)
+```bash
+docker pull ghcr.io/zsxsoft/my-ctf-challenges:0ctf2025-springduck
+```

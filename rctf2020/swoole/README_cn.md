@@ -2,9 +2,9 @@
 
 make unserialize great again!
 
-## License
-
-AGPL License
+```bash
+docker pull ghcr.io/zsxsoft/my-ctf-challenges:rctf2020-swoole
+```
 
 ## Payload
 

@@ -5,6 +5,12 @@ An easily solvable but challenging to setup challenge.
 
 10 solves.
 
+## Docker Images
+
+- `ghcr.io/zsxsoft/my-ctf-challenges:0ctf2023-olapinfra-web`
+- `ghcr.io/zsxsoft/my-ctf-challenges:0ctf2023-olapinfra-clickhouse`
+- `ghcr.io/zsxsoft/my-ctf-challenges:0ctf2023-olapinfra-hive`
+
 ## Writeup
 
 

@@ -2,6 +2,11 @@
 
 A easy challenge, lots of teams solved this. BTW, some teams tried ChatGPT. Fortunately, AI can't solve this.
 
+## Docker Images
+
+- `ghcr.io/zsxsoft/my-ctf-challenges:rctf2022-prettieronline-fe`
+- `ghcr.io/zsxsoft/my-ctf-challenges:rctf2022-prettieronline-prettier`
+
 ## My solution
 ```js
 #!/usr/bin/node

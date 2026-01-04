@@ -7,9 +7,13 @@ COPY . .
 RUN go build -v -o kubevirt
 
 FROM alpine:3.19
-COPY virtctl-v1.3.1-linux-amd64 /usr/bin/virtctl
 #RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
-RUN apk --no-cache add ca-certificates tini kubectl && chmod +x /usr/bin/virtctl
+RUN apk --no-cache add ca-certificates tini kubectl wget && \
+    wget https://github.com/kubevirt/kubectl-virt-plugin/releases/download/v1.3.1/virtctl-linux-amd64.tar.gz -O /tmp/virtctl-linux-amd64.tar.gz && \
+    cd /tmp && \
+    tar -xzf virtctl-linux-amd64.tar.gz && \
+    mv virtctl/virtctl-linux-amd64 /usr/local/bin/virtctl && \
+    rm -rf /tmp/virtctl*
 
 WORKDIR /app
 COPY --from=builder /app/kubevirt .

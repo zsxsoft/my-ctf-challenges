@@ -1,5 +1,10 @@
 # amp
 
+## Docker Images
+
+- `ghcr.io/zsxsoft/my-ctf-challenges:0ctf2020-amp2020-web`
+- `ghcr.io/zsxsoft/my-ctf-challenges:0ctf2020-amp2020-db`
+
 ## Solution
 
 This challenge is inspired by [XSS in GMail's AMP4Email via DOM Clobbering](https://research.securitum.com/xss-in-amp4email-dom-clobbering/).

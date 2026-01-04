@@ -2,6 +2,10 @@
 
 My friend called me to mine a new 0day of Apache Solr, so I found this!
 
+```bash
+docker pull ghcr.io/zsxsoft/my-ctf-challenges:0ctf2021-soracon
+```
+
 ## Writeup
 
 ### Solr

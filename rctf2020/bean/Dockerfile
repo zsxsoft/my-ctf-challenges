@@ -3,7 +3,7 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/re
 RUN apk add -U --no-cache python3 && \
     apk add --update --no-cache  --virtual .build-deps gcc libc-dev libxml2-dev python3-dev libxml2 libxslt-dev
 RUN pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-RUN pip3 install beancount
+RUN pip3 install 'beancount==2'
 WORKDIR /app
 COPY package.json yarn.lock /app/
 RUN yarn

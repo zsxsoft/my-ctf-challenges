@@ -1,5 +1,9 @@
 # bean
 
+```bash
+docker pull ghcr.io/zsxsoft/my-ctf-challenges:rctf2020-bean
+```
+
 ## Solution
 
 ```beancount
