@@ -2,7 +2,7 @@ name: bean
 on:
   push:
     paths:
-      - ./rctf2020
+      - ./rctf2020/bean
       - .github/workflows/rctf2020-bean.yaml
 
 env:
